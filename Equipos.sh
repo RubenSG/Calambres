@@ -6,12 +6,13 @@
 
 clear #limpiamos la pantalla
 
+
 if [ -a "/home/$USER/.tmp/" ] && [ -d "/home/$USER/.tmp/" ]
 	then
-		echo -e "Ya exisiste el directorio Temporal\n"
+		echo -e "\n"
 	else
 		mkdir ~/.tmp
-		echo -e "\n No existe, Creado directorio Temporal \n"
+		echo -e "\n Creado directorio Temporal \n"
 fi
 
 
@@ -20,8 +21,9 @@ if [ -e "/home/$USER/.tmp/temip.tmp" ] && [ -f "/home/$USER/.tmp/temip.tmp" ]  #
 		rm /home/$USER/.tmp/temip.tmp #borramos el archivo
 		echo "borrado archivo tempi.tmp temporal"
 	else
-		ifconfig | grep "broadcast *.*.*.*" > ~/.tmp/temip.tmp #creamos el archivo.
-		ip=`cat -A ~/.tmp/temip.tmp | tr -s " " "\n" | tail -15c | head -c 10 |tr "%" " "` #obtenemos la ip de difusión, ya que sabemos fijo que termina en 255.
+		ifconfig | grep "inet *.*.*.*" > ~/.tmp/temip.tmp #creamos el archivo.
+		tuip=`cat -A ~/.tmp/temip.tmp | tr -s " " "\n" | head -19c |tr "inet" " "`
+		ip=`cat -A ~/.tmp/temip.tmp | tr -s " " "\n" | head -16c |tr "inet" " "` #obtenemos la ip, ya que sabemos fijo que termina en 255.
 		rm ~/.tmp/temip.tmp
 fi
 
@@ -46,4 +48,7 @@ if [ -a "/home/$USER/.tmp/temip.tmp" ] && [ -f "/home/$USER/.tmp/temip.tmp" ]
 		cat ~/.tmp/ping.tmp |grep "ttl=" > ~/.tmp/pingf.tmp
 		rm ~/.tmp/ping.tmp
 fi
+
+echo -e "Tu Ip es: $tuip \n\n"
+
 cat ~/.tmp/pingf.tmp
