@@ -6,15 +6,6 @@
 
 clear #limpiamos la pantalla
 
-
-if [ -a "/home/$USER/.tmp/" ] && [ -d "/home/$USER/.tmp/" ]
-	then
-		echo -e "\n"
-	else
-		mkdir ~/.tmp
-		echo -e "\n Creado directorio Temporal \n"
-fi
-
 #Colores de el sistema Bash
 Bla='\e[0;30m';     BBla='\e[1;30m';    UBla='\e[4;30m';    IBla='\e[0;90m';    BIBla='\e[1;90m';   On_Bla='\e[40m';    On_IBla='\e[0;100m';
 Red='\e[0;31m';     BRed='\e[1;31m';    URed='\e[4;31m';    IRed='\e[0;91m';    BIRed='\e[1;91m';   On_Red='\e[41m';    On_IRed='\e[0;101m';
