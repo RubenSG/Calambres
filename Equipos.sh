@@ -1,3 +1,4 @@
+
 #!/bin/sh
 
 #Autor: Rubén S.G.
@@ -5,6 +6,8 @@
 #descripción: Muestra los equipos que estan conectados a la red, mediante la ip.
 
 clear #limpiamos la pantalla
+
+
 
 #Colores de el sistema Bash
 Bla='\e[0;30m';     BBla='\e[1;30m';    UBla='\e[4;30m';    IBla='\e[0;90m';    BIBla='\e[1;90m';   On_Bla='\e[40m';    On_IBla='\e[0;100m';
@@ -48,7 +51,7 @@ else
 	touch ~/.tmp/ping.tmp #creo un archivo vacio.
 fi
 
-#obtenemos las tarjetas de red conectadas al equipo.
+#Obtenemos las tarjetas de red conectadas al equipo.
 if [ -a "/home/$USER/.tmp/tarjetas.tmp" ] &&[ -f "/home/$USER/.tmp/tarjetas.tmp" ]
 	then
 	rm /home/$USER/.tmp/tarjetas.tmp
@@ -57,8 +60,8 @@ else
 	ifconfig |tr " " ":" | cut -d: -f1 | tr "\n" " " | tr "\n" "\a" | tr "%" "\b" | unexpand -a > ~/.tmp/tarjetas.tmp
 fi
 
-#Acemo un  ping a toda la red
-for (( contar=1; contar<254 ; contar++ )) #creamos un bucle que recorre todas las ip's de la red.
+#Hacemos un  ping a toda la red
+for (( contar=1; contar<=254 ; contar++ )) #creamos un bucle que recorre todas las ip's de la red.
 	do
 		ping -c 1 $ip$contar >> ~/.tmp/ping.tmp & #realizamos in ping a cada maquina
 done
