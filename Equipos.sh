@@ -1,12 +1,8 @@
-
 #!/bin/sh
 
 #Autor: Rubén S.G.
 #Fecha: 05/10/2013
 #descripción: Muestra los equipos que estan conectados a la red, mediante la ip.
-
-clear #limpiamos la pantalla
-
 
 
 #Colores de el sistema Bash
@@ -23,6 +19,11 @@ fin='\e[0m';
 # finde colores
 
 
+while [ "$OPCION" != 2 ] #bucle que no termina hasta que se le pase un 2
+do
+   
+clear #limpiamos la pantalla
+    
 if [ -a "/home/$USER/.tmp/" ] && [ -d "/home/$USER/.tmp/" ]
 	then
 		echo -e "\n"
@@ -41,8 +42,8 @@ if [ -e "/home/$USER/.tmp/temip.tmp" ] && [ -f "/home/$USER/.tmp/temip.tmp" ]  #
 		tuip=`cat -A ~/.tmp/temip.tmp | tr -s " " "\n" | head -19c |tr "inet" " "`
 		ip=`cat -A ~/.tmp/temip.tmp | tr -s " " "\n" | head -16c |tr "inet" " "` #obtenemos la ip de difusión, ya que sabemos fijo que termina en 255.
 		rm ~/.tmp/temip.tmp
-fi
 
+fi
 #Comprovamos que exista el fichero
 if [ -a "/home/$USER/.tmp/temip.tmp" ] && [ -f "~/home/$USER/.tmp/temip.tmp" ]
 	then
@@ -61,7 +62,7 @@ else
 fi
 
 #Hacemos un  ping a toda la red
-for (( contar=1; contar<=254 ; contar++ )) #creamos un bucle que recorre todas las ip's de la red.
+for (( contar=1; contar<255 ; contar++ )) #creamos un bucle que recorre todas las ip's de la red.
 	do
 		ping -c 1 $ip$contar >> ~/.tmp/ping.tmp & #realizamos in ping a cada maquina
 done
@@ -88,11 +89,56 @@ if [ -a "/home/$USER/.tmp/pingf.tmp" ] && [ -f "/home/$USER/.tmp/pingf.tmp" ]
 		rm ~/.tmp/pingf.tmp
 fi
 
-catidaequipos=`wc -l ~/.tmp/soloip.tmp | cut -d" " -f1`
+
+if [ -a "/home/$USER/.tmp/ip2.tmp" ] && [ -f "/home/$USER/.tmp/ip2.tmp" ] #tratamiento de la tabla arp.
+	then
+		sleep 15s
+		rm ~/.tmp/arp.tmp
+		rm ~/.tmp/ip2.tmp
+		rm ~/.tmp/mac.tmp
+		
+		touch ~/.tmp/arp.tmp
+		touch ~/.tmp/ip2.tmp
+		touch ~/.tmp/mac.tmp
+		
+		arp -e >> ~/.tmp/arp.tmp
+		cat -A ~/.tmp/arp.tmp | cut -d' ' -f1 | tr -s 'Address' ' ' >> ~/.tmp/ip2.tmp
+		cat -A ~/.tmp/arp.tmp | cut -d' ' -f16 >> ~/.tmp/mac.tmp
+
+	else
+		sleep 17s
+		touch ~/.tmp/arp.tmp
+		touch ~/.tmp/ip2.tmp
+		touch ~/.tmp/mac.tmp
+		
+		arp -e >> ~/.tmp/arp.tmp
+		cat -A ~/.tmp/arp.tmp | cut -d' ' -f1 | tr -s 'Address' ' ' >> ~/.tmp/ip2.tmp
+		cat -A ~/.tmp/arp.tmp | cut -d' ' -f16 >> ~/.tmp/mac.tmp
+fi
+
+	cuentamiip=`wc -l ~/.tmp/soloip.tmp | cut -d" " -f1`
+	cuentaip2=`wc -l ~/.tmp/ip2.tmp | cut -d" " -f1`
+
+cantidaequipos=`expr $cuentamiip + $cuentaip2 - 1` 
 
 
+echo -e "-------------------------------------------------------------------------------------------------"
 echo -e "Tarjetas de Red: "$BRed`cat ~/.tmp/tarjetas.tmp`$fin"\n"
 echo -e "\nTu Ip es :"$BRed$tuip$fin"\n";
-echo -e "Equipos en la Red: "$URed$catidaequipos$fin"\n";
-cat ~/.tmp/soloip.tmp
-echo -e "\n";
+echo -e "-------------------------------------------------------------------------------------------------"
+echo -e "Equipos en la Red: "$URed$cantidaequipos$fin"\n";
+echo -e "\t IP \n \b\b"
+cat ~/.tmp/ip2.tmp 
+echo -e "------------------\n\t MAC"
+cat ~/.tmp/mac.tmp
+
+
+#echo "[1] volver a explorar"
+#echo -e "[2] "$Red"Salir"$fin
+
+
+#    read -p "Ingrese una opción: " OPCION
+
+sleep 2m
+
+done
